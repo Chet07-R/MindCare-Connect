@@ -1,5 +1,5 @@
 import { useState, useRef, useEffect } from 'react';
-import { Send, Bot, User, AlertCircle, Phone, Download, History, MoreVertical, Trash2 } from 'lucide-react';
+import { Send, Bot, User, AlertCircle, Phone, Download, History, MoreVertical, Trash2, Sparkles, Heart, Zap } from 'lucide-react';
 
 interface Message {
   id: string;
@@ -331,40 +331,51 @@ export default function AIChat() {
   };
 
   return (
-    <div className="max-w-6xl mx-auto bg-white rounded-lg shadow-sm border border-gray-200 h-[700px] flex">
+    <div className="max-w-6xl mx-auto bg-white/80 dark:bg-gray-800/80 backdrop-blur-sm rounded-2xl shadow-2xl border border-gray-200/50 dark:border-gray-700/50 h-[600px] flex overflow-hidden">
       {/* Sessions Sidebar */}
-      <div className={`border-r border-gray-200 transition-all duration-300 ${showSessions ? 'w-80' : 'w-0 overflow-hidden'}`}>
-        <div className="p-4 border-b border-gray-200">
+      <div className={`border-r border-gray-200/50 dark:border-gray-700/50 transition-all duration-500 ${showSessions ? 'w-80' : 'w-0 overflow-hidden'}`}>
+        <div className="p-4 border-b border-gray-200/50 dark:border-gray-700/50 bg-gradient-to-r from-teal-50 to-blue-50 dark:from-teal-900/20 dark:to-blue-900/20">
           <div className="flex items-center justify-between">
-            <h3 className="font-semibold text-gray-900">Chat History</h3>
+            <div className="flex items-center space-x-2">
+              <div className="p-1.5 bg-gradient-to-r from-teal-500 to-blue-500 rounded-lg">
+                <History className="h-4 w-4 text-white" />
+              </div>
+              <h3 className="font-bold text-gray-900 dark:text-white text-sm">Chat History</h3>
+            </div>
             <button
               onClick={createNewSession}
-              className="text-sm bg-teal-600 text-white px-3 py-1 rounded-md hover:bg-teal-700"
+              className="group flex items-center space-x-1 bg-gradient-to-r from-teal-500 to-blue-500 text-white px-3 py-1.5 rounded-xl hover:from-teal-600 hover:to-blue-600 transition-all duration-300 shadow-lg hover:shadow-xl hover:scale-105"
             >
-              New Chat
+              <Sparkles className="h-3 w-3" />
+              <span className="text-xs font-medium">New Chat</span>
             </button>
           </div>
         </div>
-        <div className="overflow-y-auto h-full">
+        <div className="overflow-y-auto h-full bg-white/50 dark:bg-gray-800/50">
           {sessions.map((session) => (
             <div
               key={session.id}
-              className={`p-3 border-b border-gray-100 cursor-pointer hover:bg-gray-50 ${
-                activeSessionId === session.id ? 'bg-teal-50 border-l-4 border-l-teal-600' : ''
+              className={`group p-3 border-b border-gray-100/50 dark:border-gray-700/50 cursor-pointer hover:bg-gradient-to-r hover:from-teal-50 hover:to-blue-50 dark:hover:from-teal-900/20 dark:hover:to-blue-900/20 transition-all duration-300 ${
+                activeSessionId === session.id ? 'bg-gradient-to-r from-teal-50 to-blue-50 dark:from-teal-900/30 dark:to-blue-900/30 border-l-4 border-l-gradient-to-b border-l-teal-500' : ''
               }`}
               onClick={() => setActiveSessionId(session.id)}
             >
               <div className="flex items-center justify-between">
                 <div className="flex-1">
-                  <p className="font-medium text-sm text-gray-900 truncate">{session.title}</p>
-                  <p className="text-xs text-gray-500">{session.lastActive.toLocaleDateString()}</p>
-                  <div className="flex items-center mt-1">
-                    <span className={`inline-block w-2 h-2 rounded-full mr-1 ${
-                      session.riskLevel === 'crisis' ? 'bg-red-600' :
-                      session.riskLevel === 'high' ? 'bg-orange-500' :
-                      session.riskLevel === 'medium' ? 'bg-yellow-500' : 'bg-green-500'
-                    }`}></span>
-                    <span className="text-xs text-gray-500 capitalize">{session.riskLevel} risk</span>
+                  <p className="font-semibold text-sm text-gray-900 dark:text-white truncate group-hover:text-teal-700 dark:group-hover:text-teal-300 transition-colors">{session.title}</p>
+                  <p className="text-xs text-gray-500 dark:text-gray-400 mt-1">{session.lastActive.toLocaleDateString()}</p>
+                  <div className="flex items-center mt-2">
+                    <div className={`w-2 h-2 rounded-full mr-2 animate-pulse ${
+                      session.riskLevel === 'crisis' ? 'bg-red-500 shadow-lg shadow-red-500/50' :
+                      session.riskLevel === 'high' ? 'bg-orange-500 shadow-lg shadow-orange-500/50' :
+                      session.riskLevel === 'medium' ? 'bg-yellow-500 shadow-lg shadow-yellow-500/50' : 'bg-green-500 shadow-lg shadow-green-500/50'
+                    }`}></div>
+                    <span className={`text-xs font-medium capitalize px-2 py-1 rounded-full ${
+                      session.riskLevel === 'crisis' ? 'bg-red-100 text-red-700 dark:bg-red-900/30 dark:text-red-300' :
+                      session.riskLevel === 'high' ? 'bg-orange-100 text-orange-700 dark:bg-orange-900/30 dark:text-orange-300' :
+                      session.riskLevel === 'medium' ? 'bg-yellow-100 text-yellow-700 dark:bg-yellow-900/30 dark:text-yellow-300' : 
+                      'bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-300'
+                    }`}>{session.riskLevel} risk</span>
                   </div>
                 </div>
                 {sessions.length > 1 && (
@@ -373,9 +384,9 @@ export default function AIChat() {
                       e.stopPropagation();
                       deleteSession(session.id);
                     }}
-                    className="text-gray-400 hover:text-red-600 p-1"
+                    className="opacity-0 group-hover:opacity-100 text-gray-400 hover:text-red-500 dark:hover:text-red-400 p-2 rounded-lg hover:bg-red-50 dark:hover:bg-red-900/20 transition-all duration-300"
                   >
-                    <Trash2 className="h-3 w-3" />
+                    <Trash2 className="h-4 w-4" />
                   </button>
                 )}
               </div>
@@ -387,31 +398,46 @@ export default function AIChat() {
       {/* Main Chat Area */}
       <div className="flex-1 flex flex-col">
         {/* Header */}
-        <div className="border-b border-gray-200 p-4">
+        <div className="border-b border-gray-200/50 dark:border-gray-700/50 p-4 bg-gradient-to-r from-gray-50 to-blue-50 dark:from-gray-800 dark:to-gray-700">
           <div className="flex items-center justify-between">
             <div className="flex items-center">
               <button
                 onClick={() => setShowSessions(!showSessions)}
-                className="mr-3 p-1 hover:bg-gray-100 rounded"
+                className="mr-3 p-2 hover:bg-white/80 dark:hover:bg-gray-600/50 rounded-xl transition-all duration-300 hover:scale-110"
               >
-                <History className="h-5 w-5 text-gray-600" />
+                <History className="h-4 w-4 text-gray-600 dark:text-gray-300" />
               </button>
-              <Bot className="h-6 w-6 text-teal-600 mr-2" />
-              <div>
-                <h2 className="text-lg font-semibold text-gray-900">AI Mental Health Support</h2>
-                <p className="text-sm text-gray-600">
-                  {activeSession?.title} • {messages.length} messages
+              <div className="relative">
+                <div className="absolute inset-0 bg-gradient-to-r from-teal-500 to-blue-500 rounded-xl blur-lg opacity-30"></div>
+                <div className="relative p-2 bg-gradient-to-r from-teal-500 to-blue-500 rounded-xl">
+                  <Bot className="h-6 w-6 text-white" />
+                </div>
+              </div>
+              <div className="ml-3">
+                <div className="flex items-center space-x-2 mb-1">
+                  <h2 className="text-lg font-bold bg-gradient-to-r from-teal-600 to-blue-600 bg-clip-text text-transparent">AI Mental Health Support</h2>
+                  <div className="flex items-center space-x-1">
+                    <div className="w-2 h-2 bg-green-500 rounded-full animate-pulse"></div>
+                    <span className="text-xs text-green-600 dark:text-green-400 font-medium">Online</span>
+                  </div>
+                </div>
+                <p className="text-xs text-gray-600 dark:text-gray-300 flex items-center space-x-2">
+                  <span>{activeSession?.title}</span>
+                  <span>•</span>
+                  <span>{messages.length} messages</span>
+                  <Zap className="h-3 w-3 text-yellow-500" />
+                  <span className="text-yellow-600 dark:text-yellow-400">AI-Powered</span>
                 </p>
               </div>
             </div>
-            <div className="flex items-center space-x-2">
+            <div className="flex items-center space-x-3">
               {riskLevel !== 'low' && (
-                <div className={`flex items-center px-3 py-1 rounded-full text-sm ${
-                  riskLevel === 'crisis' ? 'bg-red-100 text-red-700' :
-                  riskLevel === 'high' ? 'bg-orange-100 text-orange-700' :
-                  'bg-yellow-100 text-yellow-700'
+                <div className={`flex items-center px-3 py-1.5 rounded-xl text-xs font-medium shadow-lg animate-pulse ${
+                  riskLevel === 'crisis' ? 'bg-gradient-to-r from-red-100 to-red-200 dark:from-red-900/30 dark:to-red-800/30 text-red-700 dark:text-red-300 shadow-red-500/25' :
+                  riskLevel === 'high' ? 'bg-gradient-to-r from-orange-100 to-orange-200 dark:from-orange-900/30 dark:to-orange-800/30 text-orange-700 dark:text-orange-300 shadow-orange-500/25' :
+                  'bg-gradient-to-r from-yellow-100 to-yellow-200 dark:from-yellow-900/30 dark:to-yellow-800/30 text-yellow-700 dark:text-yellow-300 shadow-yellow-500/25'
                 }`}>
-                  <AlertCircle className="h-4 w-4 mr-1" />
+                  <AlertCircle className="h-3 w-3 mr-1.5" />
                   {riskLevel === 'crisis' ? 'Crisis Detected' :
                    riskLevel === 'high' ? 'High Risk' : 'Medium Risk'}
                 </div>
@@ -419,25 +445,25 @@ export default function AIChat() {
               <div className="relative">
                 <button
                   onClick={() => setShowExportOptions(!showExportOptions)}
-                  className="p-2 hover:bg-gray-100 rounded"
+                  className="p-2 hover:bg-white/80 dark:hover:bg-gray-600/50 rounded-xl transition-all duration-300 hover:scale-110"
                 >
-                  <MoreVertical className="h-5 w-5 text-gray-600" />
+                  <MoreVertical className="h-4 w-4 text-gray-600 dark:text-gray-300" />
                 </button>
                 {showExportOptions && (
-                  <div className="absolute right-0 mt-1 w-48 bg-white border border-gray-200 rounded-md shadow-lg z-10">
-                    <div className="py-1">
+                  <div className="absolute right-0 mt-2 w-56 bg-white/90 dark:bg-gray-800/90 backdrop-blur-sm border border-gray-200/50 dark:border-gray-700/50 rounded-2xl shadow-2xl z-10">
+                    <div className="py-2">
                       <button
                         onClick={() => exportChat('text')}
-                        className="flex items-center w-full px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
+                        className="flex items-center w-full px-4 py-3 text-sm text-gray-700 dark:text-gray-300 hover:bg-gradient-to-r hover:from-blue-50 hover:to-teal-50 dark:hover:from-blue-900/20 dark:hover:to-teal-900/20 transition-all duration-300 rounded-xl mx-2"
                       >
-                        <Download className="h-4 w-4 mr-2" />
+                        <Download className="h-4 w-4 mr-3 text-blue-500" />
                         Export as Text
                       </button>
                       <button
                         onClick={() => exportChat('json')}
-                        className="flex items-center w-full px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
+                        className="flex items-center w-full px-4 py-3 text-sm text-gray-700 dark:text-gray-300 hover:bg-gradient-to-r hover:from-blue-50 hover:to-teal-50 dark:hover:from-blue-900/20 dark:hover:to-teal-900/20 transition-all duration-300 rounded-xl mx-2"
                       >
-                        <Download className="h-4 w-4 mr-2" />
+                        <Download className="h-4 w-4 mr-3 text-blue-500" />
                         Export as JSON
                       </button>
                     </div>
@@ -450,10 +476,15 @@ export default function AIChat() {
 
         {/* Crisis Alert */}
         {riskLevel === 'crisis' && (
-          <div className="bg-red-50 border-b border-red-200 p-4">
-            <div className="flex items-center text-red-800">
-              <Phone className="h-5 w-5 mr-2" />
-              <span className="font-medium">Crisis Support: Call 1800-XXX-XXXX immediately or text 988</span>
+          <div className="bg-gradient-to-r from-red-50/90 to-pink-50/90 dark:from-red-900/30 dark:to-pink-900/30 border-b border-red-200/60 dark:border-red-800/60 p-6 backdrop-blur-sm shadow-lg animate-pulseSoft">
+            <div className="flex items-center text-red-800 dark:text-red-300">
+              <div className="flex-shrink-0 p-2 bg-red-100/80 dark:bg-red-800/40 rounded-full mr-3 animate-pulse">
+                <Phone className="h-5 w-5 text-red-600 dark:text-red-400" />
+              </div>
+              <div>
+                <span className="font-semibold text-base">Crisis Support Available</span>
+                <p className="text-sm mt-1 font-medium">Call 1800-XXX-XXXX immediately or text 988</p>
+              </div>
             </div>
           </div>
         )}
@@ -463,37 +494,37 @@ export default function AIChat() {
           {messages.map((message) => (
             <div
               key={message.id}
-              className={`flex ${message.sender === 'user' ? 'justify-end' : 'justify-start'}`}
+              className={`flex animate-fadeIn ${message.sender === 'user' ? 'justify-end' : 'justify-start'}`}
             >
               <div className={`flex max-w-xs lg:max-w-md xl:max-w-lg ${message.sender === 'user' ? 'flex-row-reverse' : ''}`}>
-                <div className={`flex-shrink-0 ${message.sender === 'user' ? 'ml-2' : 'mr-2'}`}>
+                <div className={`flex-shrink-0 ${message.sender === 'user' ? 'ml-3' : 'mr-3'}`}>
                   {message.sender === 'ai' ? (
-                    <div className="w-8 h-8 bg-teal-100 rounded-full flex items-center justify-center">
-                      <Bot className="h-4 w-4 text-teal-600" />
+                    <div className="w-10 h-10 bg-gradient-to-br from-teal-100 to-emerald-100 dark:from-teal-800/40 dark:to-emerald-800/40 rounded-full flex items-center justify-center shadow-lg backdrop-blur-sm">
+                      <Bot className="h-5 w-5 text-teal-600 dark:text-teal-400" />
                     </div>
                   ) : (
-                    <div className="w-8 h-8 bg-blue-100 rounded-full flex items-center justify-center">
-                      <User className="h-4 w-4 text-blue-600" />
+                    <div className="w-10 h-10 bg-gradient-to-br from-blue-100 to-indigo-100 dark:from-blue-800/40 dark:to-indigo-800/40 rounded-full flex items-center justify-center shadow-lg backdrop-blur-sm">
+                      <User className="h-5 w-5 text-blue-600 dark:text-blue-400" />
                     </div>
                   )}
                 </div>
                 <div
-                  className={`px-4 py-2 rounded-lg ${
+                  className={`px-5 py-3 rounded-2xl shadow-lg backdrop-blur-sm transition-all duration-300 hover:shadow-xl hover:scale-[1.02] ${
                     message.sender === 'user'
-                      ? 'bg-blue-600 text-white'
-                      : 'bg-gray-100 text-gray-900'
+                      ? 'bg-gradient-to-br from-blue-600 to-indigo-600 dark:from-blue-700 dark:to-indigo-700 text-white'
+                      : 'bg-gradient-to-br from-gray-50 to-white dark:from-gray-800/80 dark:to-gray-700/80 text-gray-900 dark:text-gray-100 border border-gray-200/50 dark:border-gray-600/30'
                   }`}
                 >
-                  <p className="text-sm whitespace-pre-line">{message.content}</p>
-                  <div className={`flex items-center justify-between mt-1 ${
-                    message.sender === 'user' ? 'text-blue-100' : 'text-gray-500'
+                  <p className="text-sm whitespace-pre-line leading-relaxed">{message.content}</p>
+                  <div className={`flex items-center justify-between mt-2 ${
+                    message.sender === 'user' ? 'text-blue-100' : 'text-gray-500 dark:text-gray-400'
                   }`}>
-                    <p className="text-xs">
+                    <p className="text-xs font-medium">
                       {message.timestamp.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
                     </p>
                     {message.sentiment && message.confidence && (
                       <div className="flex items-center ml-2">
-                        <span className={`text-xs ${getSentimentColor(message.sentiment)}`}>
+                        <span className={`text-xs font-medium px-2 py-1 rounded-full backdrop-blur-sm ${getSentimentColor(message.sentiment)}`}>
                           {message.sentiment} ({Math.round(message.confidence * 100)}%)
                         </span>
                       </div>
@@ -505,18 +536,18 @@ export default function AIChat() {
           ))}
           
           {isTyping && (
-            <div className="flex justify-start">
+            <div className="flex justify-start animate-fadeIn">
               <div className="flex max-w-xs lg:max-w-md">
-                <div className="flex-shrink-0 mr-2">
-                  <div className="w-8 h-8 bg-teal-100 rounded-full flex items-center justify-center">
-                    <Bot className="h-4 w-4 text-teal-600" />
+                <div className="flex-shrink-0 mr-3">
+                  <div className="w-10 h-10 bg-gradient-to-br from-teal-100 to-emerald-100 dark:from-teal-800/40 dark:to-emerald-800/40 rounded-full flex items-center justify-center shadow-lg backdrop-blur-sm">
+                    <Bot className="h-5 w-5 text-teal-600 dark:text-teal-400" />
                   </div>
                 </div>
-                <div className="bg-gray-100 px-4 py-2 rounded-lg">
+                <div className="bg-gradient-to-br from-gray-50 to-white dark:from-gray-800/80 dark:to-gray-700/80 px-5 py-3 rounded-2xl shadow-lg backdrop-blur-sm border border-gray-200/50 dark:border-gray-600/30">
                   <div className="flex space-x-1">
-                    <div className="w-2 h-2 bg-gray-400 rounded-full animate-bounce"></div>
-                    <div className="w-2 h-2 bg-gray-400 rounded-full animate-bounce" style={{animationDelay: '0.1s'}}></div>
-                    <div className="w-2 h-2 bg-gray-400 rounded-full animate-bounce" style={{animationDelay: '0.2s'}}></div>
+                    <div className="w-2.5 h-2.5 bg-teal-500 dark:bg-teal-400 rounded-full animate-bounce"></div>
+                    <div className="w-2.5 h-2.5 bg-teal-500 dark:bg-teal-400 rounded-full animate-bounce" style={{animationDelay: '0.1s'}}></div>
+                    <div className="w-2.5 h-2.5 bg-teal-500 dark:bg-teal-400 rounded-full animate-bounce" style={{animationDelay: '0.2s'}}></div>
                   </div>
                 </div>
               </div>
@@ -527,26 +558,26 @@ export default function AIChat() {
         </div>
 
         {/* Input */}
-        <div className="border-t border-gray-200 p-4">
-          <div className="flex space-x-2">
+        <div className="border-t border-gray-200/50 dark:border-gray-700/50 bg-gradient-to-r from-white/80 to-gray-50/80 dark:from-gray-900/80 dark:to-gray-800/80 backdrop-blur-sm p-4">
+          <div className="flex space-x-3">
             <input
               type="text"
               value={inputMessage}
               onChange={(e) => setInputMessage(e.target.value)}
               onKeyPress={(e) => e.key === 'Enter' && !e.shiftKey && handleSendMessage()}
               placeholder="Type your message here..."
-              className="flex-1 border border-gray-300 rounded-md px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-teal-500 focus:border-transparent"
+              className="flex-1 border border-gray-300/50 dark:border-gray-600/50 rounded-xl px-4 py-2.5 text-sm bg-white/80 dark:bg-gray-800/80 backdrop-blur-sm focus:outline-none focus:ring-2 focus:ring-teal-500 dark:focus:ring-teal-400 focus:border-transparent transition-all duration-300 placeholder-gray-500 dark:placeholder-gray-400 text-gray-900 dark:text-gray-100 shadow-lg hover:shadow-xl"
               disabled={isTyping}
             />
             <button
               onClick={handleSendMessage}
               disabled={isTyping || !inputMessage.trim()}
-              className="bg-teal-600 text-white p-2 rounded-md hover:bg-teal-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+              className="bg-gradient-to-r from-teal-600 to-emerald-600 dark:from-teal-700 dark:to-emerald-700 text-white p-2.5 rounded-xl hover:from-teal-700 hover:to-emerald-700 dark:hover:from-teal-600 dark:hover:to-emerald-600 transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed shadow-lg hover:shadow-xl hover:scale-105 backdrop-blur-sm"
             >
               <Send className="h-4 w-4" />
             </button>
           </div>
-          <p className="text-xs text-gray-500 mt-2">
+          <p className="text-xs text-gray-500 dark:text-gray-400 mt-2 font-medium">
             This AI provides general support and crisis detection. For emergencies, call 911 or your local crisis helpline.
           </p>
         </div>
